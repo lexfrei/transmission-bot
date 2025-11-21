@@ -41,7 +41,7 @@ go install github.com/lexfrei/transmission-bot/cmd/transmission-bot@latest
 ### Environment variables
 
 | Variable | Description | Default |
-|----------|-------------|---------|
+| -------- | ----------- | ------- |
 | `TB_TELEGRAM_TOKEN` | Telegram bot token | *required* |
 | `TB_TELEGRAM_ALLOWED_USERS` | Comma-separated list of allowed Telegram user IDs | *required* |
 | `TB_TRANSMISSION_URL` | Transmission RPC URL | `http://localhost:9091/transmission/rpc` |
@@ -96,7 +96,7 @@ export TB_TELEGRAM_ALLOWED_USERS=123456789
 ## Bot Commands
 
 | Command | Description |
-|---------|-------------|
+| ------- | ----------- |
 | `/start` | Start the bot |
 | `/help` | Show help message |
 | `/list` | List all torrents |
