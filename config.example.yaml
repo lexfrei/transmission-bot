@@ -1,0 +1,12 @@
+telegram:
+  token: "YOUR_BOT_TOKEN"
+  allowed_users:
+    - 123456789
+
+transmission:
+  url: "http://localhost:9091/transmission/rpc"
+  username: ""
+  password: ""
+
+log:
+  level: "info"
