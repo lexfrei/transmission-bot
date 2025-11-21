@@ -1,0 +1,41 @@
+# Binaries
+/transmission-bot
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+dist/
+
+# Test coverage
+*.out
+coverage.txt
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies
+vendor/
+
+# Temporary files
+tmp/
+temp/
+
+# Secrets and credentials
+config.yaml
+*credentials*.yaml
+*.key
+*.pem
+.env
+*.secret
+
+# Build artifacts
+*.log
