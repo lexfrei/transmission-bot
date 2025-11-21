@@ -30,7 +30,7 @@ A clear and concise description of what you expected to happen.
 
 ## Logs
 
-```
+```text
 Paste relevant logs here
 ```
 

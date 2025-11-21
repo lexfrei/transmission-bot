@@ -8,7 +8,7 @@
 
 ## Reporting a Vulnerability
 
-Please report security vulnerabilities to: f@lex.la
+Please report security vulnerabilities to: <f@lex.la>
 
 **Do not** report security vulnerabilities through public GitHub issues.
 
