@@ -17,22 +17,17 @@ import (
 )
 
 // Build-time variables set via ldflags.
-//
-//nolint:gochecknoglobals // Required for ldflags injection at build time
 var (
 	Version  = "development"
 	Revision = "unknown"
 )
 
 // CLI flags and command - global variables required by cobra pattern.
-//
-//nolint:gochecknoglobals // Cobra requires global variables for command registration
 var (
 	cfgFile  string
 	logLevel string
 )
 
-//nolint:gochecknoglobals // Cobra requires global command variable
 var rootCmd = &cobra.Command{
 	Use:     "transmission-bot",
 	Short:   "Telegram bot for Transmission torrent client",

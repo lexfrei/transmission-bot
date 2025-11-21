@@ -13,44 +13,42 @@ linters:
     - wsl
     - lll
     - ireturn
-
-linters-settings:
-  funlen:
-    lines: 60
-    statements: 60
-  gocyclo:
-    min-complexity: 15
-  cyclop:
-    max-complexity: 15
-  varnamelen:
-    min-name-length: 3
-    ignore-names:
-      - err
-      - ctx
-      - id
-      - ok
-      - i
-      - t
-      - b
-      - v
-
-exclusions:
-  generated: lax
-  presets:
-    - comments
-    - common-false-positives
-    - legacy
-    - std-error-handling
-  rules:
-    - path: _test\.go
-      linters:
-        - funlen
-        - gocyclo
-        - cyclop
-        - dupl
-    - path: cmd/
-      linters:
-        - gochecknoglobals
+  settings:
+    funlen:
+      lines: 60
+      statements: 60
+    gocyclo:
+      min-complexity: 15
+    cyclop:
+      max-complexity: 15
+    varnamelen:
+      min-name-length: 3
+      ignore-names:
+        - err
+        - ctx
+        - id
+        - ok
+        - i
+        - t
+        - b
+        - v
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - path: _test\.go
+        linters:
+          - funlen
+          - gocyclo
+          - cyclop
+          - dupl
+      - path: cmd/
+        linters:
+          - gochecknoglobals
 
 formatters:
   enable:
