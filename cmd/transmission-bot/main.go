@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -122,9 +123,27 @@ func setupLogger(level string) *slog.Logger {
 		slogLevel = slog.LevelInfo
 	}
 
-	handler := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 		Level: slogLevel,
 	})
 
-	return slog.New(handler)
+	logger := slog.New(handler)
+
+	// Set logger for telegram-bot-api library
+	_ = tgbotapi.SetLogger(&slogAdapter{logger: logger})
+
+	return logger
+}
+
+// slogAdapter adapts slog.Logger to tgbotapi.BotLogger interface.
+type slogAdapter struct {
+	logger *slog.Logger
+}
+
+func (a *slogAdapter) Println(v ...any) {
+	a.logger.Info(fmt.Sprint(v...))
+}
+
+func (a *slogAdapter) Printf(format string, v ...any) {
+	a.logger.Info(fmt.Sprintf(format, v...))
 }
