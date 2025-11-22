@@ -125,7 +125,7 @@ jobs:
             $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
 
           # Get the digest of the manifest
-          digest=$(docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }} --format '{{.Manifest.Digest}}')
+          digest=$(docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }} --format '{{.Manifest.Digest}}')
           echo "digest=$digest" >> $GITHUB_OUTPUT
 
       - name: Install cosign
