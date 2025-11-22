@@ -1,6 +1,6 @@
 # transmission-bot
 
-[![Go](https://img.shields.io/badge/Go-1.24-blue.svg)](https://go.dev/)
+[![Go](https://img.shields.io/badge/Go-1.25-blue.svg)](https://go.dev/)
 [![License](https://img.shields.io/badge/License-BSD--3--Clause-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/lexfrei/transmission-bot)](https://github.com/lexfrei/transmission-bot/releases)
 
