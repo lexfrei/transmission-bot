@@ -52,6 +52,14 @@ func Load(configPath string) (*Config, error) {
 	viperInstance.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viperInstance.AutomaticEnv()
 
+	// Explicitly bind nested env variables
+	_ = viperInstance.BindEnv("telegram.token", "TB_TELEGRAM_TOKEN")
+	_ = viperInstance.BindEnv("telegram.allowed_users", "TB_TELEGRAM_ALLOWED_USERS")
+	_ = viperInstance.BindEnv("transmission.url", "TB_TRANSMISSION_URL")
+	_ = viperInstance.BindEnv("transmission.username", "TB_TRANSMISSION_USERNAME")
+	_ = viperInstance.BindEnv("transmission.password", "TB_TRANSMISSION_PASSWORD")
+	_ = viperInstance.BindEnv("log.level", "TB_LOG_LEVEL")
+
 	if configPath != "" {
 		viperInstance.SetConfigFile(configPath)
 	} else {
