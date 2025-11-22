@@ -135,6 +135,33 @@ func (c *Client) ListTorrents(ctx context.Context) ([]Torrent, error) {
 	return torrents, nil
 }
 
+// ErrTorrentNotFound is returned when the requested torrent does not exist.
+var ErrTorrentNotFound = errors.New("torrent not found")
+
+// GetTorrent returns a torrent by ID.
+func (c *Client) GetTorrent(ctx context.Context, torrentID int64) (*Torrent, error) {
+	fields := []string{"id", "name", "status", "percentDone", "totalSize"}
+
+	result, err := c.transmission.TorrentGet(ctx, fields, []int64{torrentID})
+	if err != nil {
+		return nil, fmt.Errorf("getting torrent: %w", err)
+	}
+
+	if len(result.Torrents) == 0 {
+		return nil, ErrTorrentNotFound
+	}
+
+	torrent := result.Torrents[0]
+
+	return &Torrent{
+		ID:          *torrent.ID,
+		Name:        *torrent.Name,
+		Status:      torrent.Status.String(),
+		PercentDone: *torrent.PercentDone,
+		TotalSize:   *torrent.TotalSize,
+	}, nil
+}
+
 // RemoveTorrent removes a torrent by ID, optionally deleting local data.
 func (c *Client) RemoveTorrent(ctx context.Context, torrentID int64, deleteData bool) error {
 	err := c.transmission.TorrentRemove(ctx, []int64{torrentID}, deleteData)

@@ -101,7 +101,7 @@ export TB_TELEGRAM_ALLOWED_USERS=123456789
 | `/help` | Show help message |
 | `/list` | List all torrents |
 | `/remove <id>` | Remove torrent by ID |
-| `/remove <id> delete` | Remove torrent and delete data |
+| `/remove <id> data` | Remove torrent and delete data |
 
 You can also send:
 

@@ -9,13 +9,9 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-// Size constants for formatting.
 const (
-	bytesInKilobyte = 1024
-	bytesInMegabyte = bytesInKilobyte * 1024
-	bytesInGigabyte = bytesInMegabyte * 1024
-	bytesInTerabyte = bytesInGigabyte * 1024
-	percentMultiply = 100
+	percentMultiply  = 100
+	maxMessageLength = 4096
 )
 
 func (b *Bot) handleCommand(ctx context.Context, msg *tgbotapi.Message) {
@@ -52,7 +48,7 @@ func (b *Bot) handleHelp(msg *tgbotapi.Message) {
 /help - Show this help message
 /list - List all torrents
 /remove <id> - Remove torrent by ID
-/remove <id> delete - Remove torrent and delete data
+/remove <id> data - Remove torrent and delete data
 
 You can also:
 • Send a .torrent file
@@ -76,29 +72,44 @@ func (b *Bot) handleList(ctx context.Context, msg *tgbotapi.Message) {
 		return
 	}
 
-	var builder strings.Builder
+	header := fmt.Sprintf("Torrents (%d):\n", len(torrents))
 
-	builder.WriteString(fmt.Sprintf("Torrents (%d):\n\n", len(torrents)))
+	var messages []string
+
+	var current strings.Builder
+
+	current.WriteString(header)
 
 	for _, torrent := range torrents {
-		builder.WriteString(fmt.Sprintf(
-			"[%d] %s\n%s | %.1f%% | %s\n\n",
+		line := fmt.Sprintf(
+			"[%d] %s - %.0f%%\n",
 			torrent.ID,
 			torrent.Name,
-			torrent.Status,
 			torrent.PercentDone*percentMultiply,
-			formatSize(torrent.TotalSize),
-		))
+		)
+
+		if current.Len()+len(line) > maxMessageLength {
+			messages = append(messages, current.String())
+			current.Reset()
+		}
+
+		current.WriteString(line)
 	}
 
-	b.reply(msg, builder.String())
+	if current.Len() > 0 {
+		messages = append(messages, current.String())
+	}
+
+	for _, message := range messages {
+		b.reply(msg, message)
+	}
 }
 
 func (b *Bot) handleRemove(ctx context.Context, msg *tgbotapi.Message) {
 	args := strings.Fields(msg.CommandArguments())
 
 	if len(args) == 0 {
-		b.reply(msg, "Usage: /remove <id> [delete]\n\nAdd 'delete' to also remove downloaded data.")
+		b.reply(msg, "Usage: /remove <id> [data]\n\nAdd 'data' to also remove downloaded data.")
 
 		return
 	}
@@ -110,7 +121,15 @@ func (b *Bot) handleRemove(ctx context.Context, msg *tgbotapi.Message) {
 		return
 	}
 
-	deleteData := len(args) > 1 && args[1] == "delete"
+	torrent, getErr := b.trClient.GetTorrent(ctx, torrentID)
+	if getErr != nil {
+		b.logger.Error("failed to get torrent", "error", getErr, "id", torrentID)
+		b.reply(msg, fmt.Sprintf("Failed to find torrent: %v", getErr))
+
+		return
+	}
+
+	deleteData := len(args) > 1 && args[1] == "data"
 
 	removeErr := b.trClient.RemoveTorrent(ctx, torrentID, deleteData)
 	if removeErr != nil {
@@ -122,28 +141,14 @@ func (b *Bot) handleRemove(ctx context.Context, msg *tgbotapi.Message) {
 
 	b.logger.Info("torrent removed",
 		"id", torrentID,
+		"name", torrent.Name,
 		"delete_data", deleteData,
 		"user_id", msg.From.ID,
 	)
 
 	if deleteData {
-		b.reply(msg, fmt.Sprintf("Torrent %d removed with data", torrentID))
+		b.reply(msg, "Removed with data: "+torrent.Name)
 	} else {
-		b.reply(msg, fmt.Sprintf("Torrent %d removed", torrentID))
-	}
-}
-
-func formatSize(bytes int64) string {
-	switch {
-	case bytes >= bytesInTerabyte:
-		return fmt.Sprintf("%.2f TB", float64(bytes)/bytesInTerabyte)
-	case bytes >= bytesInGigabyte:
-		return fmt.Sprintf("%.2f GB", float64(bytes)/bytesInGigabyte)
-	case bytes >= bytesInMegabyte:
-		return fmt.Sprintf("%.2f MB", float64(bytes)/bytesInMegabyte)
-	case bytes >= bytesInKilobyte:
-		return fmt.Sprintf("%.2f KB", float64(bytes)/bytesInKilobyte)
-	default:
-		return fmt.Sprintf("%d B", bytes)
+		b.reply(msg, "Removed: "+torrent.Name)
 	}
 }
