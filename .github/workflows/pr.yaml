@@ -12,6 +12,9 @@ permissions:
   # Note: This permission was added in GitHub Actions but may require
   # repository settings to allow deletion via GITHUB_TOKEN
 
+env:
+  GOTOOLCHAIN: auto
+
 jobs:
   # Fast checks: linting and tests
   lint:
@@ -20,14 +23,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.25.4'
+          go-version: '1.26.0'
           cache: true
 
       - name: golangci-lint
@@ -37,7 +40,7 @@ jobs:
           args: --timeout=5m
 
       - name: markdownlint
-        uses: DavidAnson/markdownlint-cli2-action@v21
+        uses: DavidAnson/markdownlint-cli2-action@v22
         with:
           globs: '**/*.md'
 
@@ -47,14 +50,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.25.4'
+          go-version: '1.26.0'
           cache: true
 
       - name: Run tests
@@ -83,7 +86,7 @@ jobs:
             runner: ubuntu-24.04-arm
     steps:
       - name: Checkout PR code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
@@ -140,7 +143,7 @@ jobs:
           touch "/tmp/digests/${digest#sha256:}"
 
       - name: Upload digest
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: digests-${{ steps.platform.outputs.pair }}
           path: /tmp/digests/*
@@ -155,7 +158,7 @@ jobs:
     needs: build-and-push
     steps:
       - name: Download digests
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           pattern: digests-*
           path: /tmp/digests
