@@ -12,6 +12,9 @@ permissions:
   # Note: This permission was added in GitHub Actions but may require
   # repository settings to allow deletion via GITHUB_TOKEN
 
+env:
+  GOTOOLCHAIN: auto
+
 jobs:
   # Fast checks: linting and tests
   lint:
