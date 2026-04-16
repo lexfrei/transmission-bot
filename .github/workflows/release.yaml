@@ -129,7 +129,7 @@ jobs:
           echo "digest=$digest" >> $GITHUB_OUTPUT
 
       - name: Install cosign
-        uses: sigstore/cosign-installer@v3
+        uses: sigstore/cosign-installer@v4
 
       - name: Sign container image
         run: |
